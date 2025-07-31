@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DAP Audio Explorer</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom scrollbar for better aesthetics, as defined in the React app */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #2d3748; /* Darker gray for track */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #63b3ed; /* Vibrant blue for thumb */
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4299e1; /* Slightly darker blue on hover */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        #root {
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body class="bg-gray-900">
+    <div id="root"></div>
+
+    <!-- React and ReactDOM CDN links -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for JSX transformation in browser (for development, typically compiled in production) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Your React App component (assuming it's in a file named App.js or index.js) -->
+    <!-- In a real-world scenario, you'd compile your React app into a single bundle.js -->
+    <!-- For this environment, we'll simulate it by placing the React code directly or linking to it if it were a separate file. -->
+    <script type="text/babel">
+        // The React App component code would go here or be imported from another file.
+        // For demonstration, imagine the 'App' component from the previous immersive is here.
+        // In a typical setup, you'd have a build step that bundles your React components.
+        // For this context, you can copy the App.js content into this script tag if running locally without a build tool.
+
+        // Placeholder for the App component. In a real project, this would be imported.
+        // For direct use in this HTML, you would paste the entire App.js content here.
+        // For example:
+        // import React, { useState, useEffect } from 'react';
+        // const App = () => { ... };
+        // ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+
+        // Since the React component 'App' is provided in a separate immersive,
+        // this script block assumes that the 'App' component is available globally
+        // or will be loaded/transpiled by the Canvas environment.
+        // If you were to run this HTML file directly, you would need to paste
+        // the content of the 'App' component provided previously into this script tag.
+
+        // Minimal setup to render if App component is globally available
+        const App = () => {
+          const [activeSection, setActiveSection] = React.useState('filters');
+          // ... (rest of your App component code from the previous immersive)
+          // For simplicity and to avoid duplicating the entire App code here,
+          // this is a conceptual representation.
+          // In the Canvas environment, the React component is handled.
+          // For local testing, paste the full App component code here.
+
+          // This is a placeholder for the actual App component from the previous immersive.
+          // To make this HTML runnable locally, you'd paste the full React 'App' component code here.
+          // For the Canvas environment, the React component is already defined and handled separately.
+          return (
+            <div className="min-h-screen bg-gray-900 text-gray-100 font-inter p-4 sm:p-6 md:p-8">
+              <header className="text-center mb-10">
+                <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-blue-400 mb-2">
+                  DAP Audio Explorer
+                </h1>
+                <p className="text-xl sm:text-2xl text-gray-300">
+                  Unraveling DAC Filters, DSD, and EQ Settings
+                </p>
+              </header>
+              <nav className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-10">
+                <button
+                  onClick={() => setActiveSection('filters')}
+                  className={`px-5 py-2 rounded-lg font-medium transition-all duration-300 ease-in-out
+                    ${activeSection === 'filters' ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white'}
+                    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75`}
+                >
+                  DAC Filters
+                </button>
+                <button
+                  onClick={() => setActiveSection('dsd')}
+                  className={`px-5 py-2 rounded-lg font-medium transition-all duration-300 ease-in-out
+                    ${activeSection === 'dsd' ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white'}
+                    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75`}
+                >
+                  All to DSD
+                </button>
+                <button
+                  onClick={() => setActiveSection('eq')}
+                  className={`px-5 py-2 rounded-lg font-medium transition-all duration-300 ease-in-out
+                    ${activeSection === 'eq' ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white'}
+                    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75`}
+                >
+                  EQ Wizard
+                </button>
+              </nav>
+              <main className="max-w-6xl mx-auto bg-gray-800 rounded-xl shadow-2xl p-6 sm:p-8 md:p-10">
+                {activeSection === 'filters' && <DACFiltersSection />}
+                {activeSection === 'dsd' && <AllToDSDSection />}
+                {activeSection === 'eq' && <EQWizardSection />}
+              </main>
+            </div>
+          );
+        };
+
+        // These components are placeholders. In a real React app, they would be imported.
+        // For this HTML to be fully runnable outside Canvas, you'd need to paste
+        // the full code for DACFiltersSection, AllToDSDSection, and EQWizardSection here as well.
+        const DACFiltersSection = () => (
+          <section>
+            <h2 className="text-2xl font-bold text-teal-400 mb-4">DAC Filters Section (Content from App.js)</h2>
+            <p className="text-gray-300">Detailed explanations and visualizations will appear here when the full App component is loaded.</p>
+          </section>
+        );
+        const AllToDSDSection = () => (
+          <section>
+            <h2 className="text-2xl font-bold text-teal-400 mb-4">All to DSD Section (Content from App.js)</h2>
+            <p className="text-gray-300">Detailed explanations and visualizations will appear here when the full App component is loaded.</p>
+          </section>
+        );
+        const EQWizardSection = () => (
+          <section>
+            <h2 className="text-2xl font-bold text-teal-400 mb-4">EQ Wizard Section (Content from App.js)</h2>
+            <p className="text-gray-300">The embedded EQ Wizard will appear here when the full App component is loaded.</p>
+            <div className="w-full h-[70vh] bg-gray-700 rounded-xl shadow-xl overflow-hidden border border-gray-600 mt-4">
+              <iframe
+                src="https://msxada.github.io/Parametric-EQ-Wizard/"
+                title="DAP EQ Wizard"
+                className="w-full h-full border-0"
+                sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+              >
+                Your browser does not support iframes. Please visit <a href="https://msxada.github.io/Parametric-EQ-Wizard/" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">the EQ Wizard directly</a>.
+              </iframe>
+            </div>
+          </section>
+        );
+
+
+        // Render the React application
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
+
