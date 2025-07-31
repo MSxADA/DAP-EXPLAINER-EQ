@@ -46,67 +46,6 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <script type="text/babel">
-        // IMPORTANT: All React components must be defined BEFORE they are used in the main App component.
-
-        // Component for a single DAC Filter Card
-        const DACFilterCard = ({ filter }) => {
-          const [showDetails, setShowDetails] = React.useState(false);
-
-          return (
-            <div className="bg-gray-700 rounded-lg p-6 shadow-xl border border-gray-600 hover:border-blue-500 transition-all duration-300 ease-in-out">
-              <h3 className="text-2xl font-semibold text-blue-300 mb-3">{filter.name}</h3>
-              <p className="text-gray-300 mb-4">{filter.description}</p>
-
-              <button
-                onClick={() => setShowDetails(!showDetails)}
-                className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
-              >
-                {showDetails ? 'Hide Details' : 'Show Detailed Analysis'}
-              </button>
-
-              {showDetails && (
-                <div className="mt-4 space-y-6">
-                  <div className="bg-gray-800 p-4 rounded-md border border-gray-600">
-                    <h4 className="text-xl font-medium text-teal-300 mb-2">Impulse Response & Ringing</h4>
-                    <p className="text-gray-300 mb-3">{filter.impulseResponse}</p>
-                    <div className="w-full max-w-sm mx-auto p-2 bg-gray-900 rounded-lg border border-gray-700">
-                      {filter.svg}
-                    </div>
-                  </div>
-
-                  <div className="bg-gray-800 p-4 rounded-md border border-gray-600">
-                    <h4 className="text-xl font-medium text-teal-300 mb-2">Frequency Response & Roll-off</h4>
-                    <p className="text-gray-300 mb-3">
-                      This graph illustrates how the filter attenuates frequencies beyond the audible range.
-                    </p>
-                    <div className="w-full max-w-sm mx-auto p-2 bg-gray-900 rounded-lg border border-gray-700">
-                      {filter.freqSvg}
-                    </div>
-                  </div>
-
-                  <div className="bg-gray-800 p-4 rounded-md border border-gray-600">
-                    <h4 className="text-xl font-medium text-teal-300 mb-2">Distortion Characteristics</h4>
-                    <p className="text-gray-300">{filter.distortion}</p>
-                  </div>
-
-                  <div className="bg-gray-800 p-4 rounded-md border border-gray-600">
-                    <h4 className="text-xl font-medium text-purple-300 mb-2">Recommended Usage</h4>
-                    <p className="text-gray-300">
-                      <span className="font-semibold text-gray-200">Best for Genres:</span> {filter.genres}
-                    </p>
-                    <p className="text-gray-300 mt-1">
-                      <span className="font-semibold text-gray-200">Listening Scenarios:</span> {filter.scenarios}
-                    </p>
-                    <p className="text-gray-300 mt-1">
-                      <span className="font-semibold text-gray-200">Works well with EQ Types:</span> {filter.eqTypes}
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        };
-
         // Component for DAC Filters Section
         const DACFiltersSection = () => {
           // Data for different DAC filters, including their characteristics and recommendations
@@ -284,4 +223,346 @@
                   <rect x="0" y="0" width="300" height="150" fill="#1f2937" rx="8" ry="8"/>
                   <text x="150" y="20" fill="#cbd5e1" fontSize="12" textAnchor="middle" fontWeight="bold">Impulse Response: Apodizing Fast Roll-off</text>
                   {/* Baseline */}
-                  <line x1="20" y1="75" x2="280" y2="75" st
+                  <line x1="20" y1="75" x2="280" y2="75" stroke="#4a5568" strokeWidth="1" strokeDasharray="2 2"/>
+                  {/* Reduced Pre-ringing */}
+                  <path d="M20,75 C50,73 70,77 90,75" stroke="#ef4444" strokeWidth="1" fill="none"/>
+                  {/* Main impulse */}
+                  <line x1="90" y1="75" x2="90" y2="40" stroke="#60a5fa" strokeWidth="3"/>
+                  {/* Post-ringing (moderate) */}
+                  <path d="M90,40 C120,75 140,65 160,75 S180,85 200,75 S220,65 240,75" stroke="#f97316" strokeWidth="2" fill="none"/>
+                  <text x="50" y="100" fill="#ef4444" fontSize="10">Reduced Pre-Ringing</text>
+                  <text x="180" y="100" fill="#f97316" fontSize="10">Moderate Post-Ringing</text>
+                  <text x="90" y="35" fill="#60a5fa" fontSize="10" textAnchor="middle">Impulse</text>
+                </svg>
+              ),
+              freqSvg: (
+                <svg viewBox="0 0 300 150" className="w-full h-auto">
+                  <rect x="0" y="0" width="300" height="150" fill="#1f2937" rx="8" ry="8"/>
+                  <text x="150" y="20" fill="#cbd5e1" fontSize="12" textAnchor="middle" fontWeight="bold">Frequency Response: Fast Roll-off (Apodizing)</text>
+                  {/* Axes */}
+                  <line x1="20" y1="130" x2="280" y2="130" stroke="#4a5568" strokeWidth="1"/>
+                  <line x1="20" y1="130" x2="20" y2="30" stroke="#4a5568" strokeWidth="1"/>
+                  {/* Curve */}
+                  <path d="M20,100 C80,100 150,100 200,90 C220,80 240,60 260,30" stroke="#60a5fa" strokeWidth="2" fill="none"/>
+                  <text x="150" y="145" fill="#cbd5e1" fontSize="10" textAnchor="middle">Frequency</text>
+                  <text x="5" y="75" fill="#cbd5e1" fontSize="10" textAnchor="middle" transform="rotate(-90 5 75)">Amplitude</text>
+                  <text x="230" y="50" fill="#60a5fa" fontSize="10">Sharp Roll-off</text>
+                </svg>
+              )
+            },
+            {
+              name: "Hybrid Fast Roll-off",
+              description: "A compromise filter that attempts to balance the benefits of linear phase (sharp cut-off) and minimum phase (no pre-ringing).",
+              impulseResponse: "Very little pre-ringing, and moderate post-ringing. It aims for a good balance between time-domain accuracy and frequency-domain precision.",
+              distortion: "Low distortion, with a balanced presentation of artifacts. Often a good all-rounder.",
+              genres: "Pop, Rock, Electronic, Classical – versatile for most genres.",
+              scenarios: "General listening, when you want a good balance of detail and naturalness without strong emphasis on either.",
+              eqTypes: "Highly versatile with EQ, as it provides a solid foundation without extreme characteristics.",
+              svg: (
+                <svg viewBox="0 0 300 150" className="w-full h-auto">
+                  <rect x="0" y="0" width="300" height="150" fill="#1f2937" rx="8" ry="8"/>
+                  <text x="150" y="20" fill="#cbd5e1" fontSize="12" textAnchor="middle" fontWeight="bold">Impulse Response: Hybrid Fast Roll-off</text>
+                  {/* Baseline */}
+                  <line x1="20" y1="75" x2="280" y2="75" stroke="#4a5568" strokeWidth="1" strokeDasharray="2 2"/>
+                  {/* Minimal Pre-ringing */}
+                  <path d="M30,75 C60,74 80,76 100,75" stroke="#ef4444" strokeWidth="1" fill="none"/>
+                  {/* Main impulse */}
+                  <line x1="100" y1="75" x2="100" y2="40" stroke="#60a5fa" strokeWidth="3"/>
+                  {/* Moderate Post-ringing */}
+                  <path d="M100,40 C130,75 150,65 170,75 S190,85 210,75" stroke="#f97316" strokeWidth="2" fill="none"/>
+                  <text x="60" y="100" fill="#ef4444" fontSize="10">Minimal Pre-Ringing</text>
+                  <text x="180" y="100" fill="#f97316" fontSize="10">Moderate Post-Ringing</text>
+                  <text x="100" y="35" fill="#60a5fa" fontSize="10" textAnchor="middle">Impulse</text>
+                </svg>
+              ),
+              freqSvg: (
+                <svg viewBox="0 0 300 150" className="w-full h-auto">
+                  <rect x="0" y="0" width="300" height="150" fill="#1f2937" rx="8" ry="8"/>
+                  <text x="150" y="20" fill="#cbd5e1" fontSize="12" textAnchor="middle" fontWeight="bold">Frequency Response: Fast Roll-off (Hybrid)</text>
+                  {/* Axes */}
+                  <line x1="20" y1="130" x2="280" y2="130" stroke="#4a5568" strokeWidth="1"/>
+                  <line x1="20" y1="130" x2="20" y2="30" stroke="#4a5568" strokeWidth="1"/>
+                  {/* Curve */}
+                  <path d="M20,100 C80,100 150,100 200,90 C220,80 240,60 260,30" stroke="#60a5fa" strokeWidth="2" fill="none"/>
+                  <text x="150" y="145" fill="#cbd5e1" fontSize="10" textAnchor="middle">Frequency</text>
+                  <text x="5" y="75" fill="#cbd5e1" fontSize="10" textAnchor="middle" transform="rotate(-90 5 75)">Amplitude</text>
+                  <text x="230" y="50" fill="#60a5fa" fontSize="10">Sharp Roll-off</text>
+                </svg>
+              )
+            },
+          ];
+
+          return (
+            <section>
+              <h2 className="text-3xl sm:text-4xl font-bold text-teal-400 mb-6 text-center">
+                Understanding DAC Filters
+              </h2>
+              <p className="text-lg text-gray-300 mb-8 text-center">
+                Digital-to-Analog Converters (DACs) in your Digital Audio Player (DAP) use filters to reconstruct the analog waveform from digital samples. These filters significantly impact the sound, particularly in how they handle frequencies near the Nyquist limit and transient responses.
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {filters.map((filter, index) => (
+                  <DACFilterCard key={index} filter={filter} />
+                ))}
+              </div>
+            </section>
+          );
+        };
+
+        // Component for a single DAC Filter Card
+        const DACFilterCard = ({ filter }) => {
+          const [showDetails, setShowDetails] = React.useState(false);
+
+          return (
+            <div className="bg-gray-700 rounded-lg p-6 shadow-xl border border-gray-600 hover:border-blue-500 transition-all duration-300 ease-in-out">
+              <h3 className="text-2xl font-semibold text-blue-300 mb-3">{filter.name}</h3>
+              <p className="text-gray-300 mb-4">{filter.description}</p>
+
+              <button
+                onClick={() => setShowDetails(!showDetails)}
+                className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+              >
+                {showDetails ? 'Hide Details' : 'Show Detailed Analysis'}
+              </button>
+
+              {showDetails && (
+                <div className="mt-4 space-y-6">
+                  <div className="bg-gray-800 p-4 rounded-md border border-gray-600">
+                    <h4 className="text-xl font-medium text-teal-300 mb-2">Impulse Response & Ringing</h4>
+                    <p className="text-gray-300 mb-3">{filter.impulseResponse}</p>
+                    <div className="w-full max-w-sm mx-auto p-2 bg-gray-900 rounded-lg border border-gray-700">
+                      {filter.svg}
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-800 p-4 rounded-md border border-gray-600">
+                    <h4 className="text-xl font-medium text-teal-300 mb-2">Frequency Response & Roll-off</h4>
+                    <p className="text-gray-300 mb-3">
+                      This graph illustrates how the filter attenuates frequencies beyond the audible range.
+                    </p>
+                    <div className="w-full max-w-sm mx-auto p-2 bg-gray-900 rounded-lg border border-gray-700">
+                      {filter.freqSvg}
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-800 p-4 rounded-md border border-gray-600">
+                    <h4 className="text-xl font-medium text-teal-300 mb-2">Distortion Characteristics</h4>
+                    <p className="text-gray-300">{filter.distortion}</p>
+                  </div>
+
+                  <div className="bg-gray-800 p-4 rounded-md border border-gray-600">
+                    <h4 className="text-xl font-medium text-purple-300 mb-2">Recommended Usage</h4>
+                    <p className="text-gray-300">
+                      <span className="font-semibold text-gray-200">Best for Genres:</span> {filter.genres}
+                    </p>
+                    <p className="text-gray-300 mt-1">
+                      <span className="font-semibold text-gray-200">Listening Scenarios:</span> {filter.scenarios}
+                    </p>
+                    <p className="text-gray-300 mt-1">
+                      <span className="font-semibold text-gray-200">Works well with EQ Types:</span> {filter.eqTypes}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        };
+
+        // Component for All to DSD Section
+        const AllToDSDSection = () => {
+          return (
+            <section className="text-gray-200">
+              <h2 className="text-3xl sm:text-4xl font-bold text-teal-400 mb-6 text-center">
+                "All to DSD" Setting Explained
+              </h2>
+              <div className="bg-gray-700 rounded-xl p-6 shadow-xl border border-gray-600 space-y-6">
+                <p className="text-lg">
+                  DSD (Direct Stream Digital) is an alternative digital audio format to PCM (Pulse Code Modulation). While PCM records audio as discrete samples of amplitude, DSD records the audio as a very high-rate stream of single-bit pulses.
+                </p>
+                <p className="text-lg">
+                  The "All to DSD" setting on your Digital Audio Player (DAP) converts all incoming PCM audio (e.g., FLAC, WAV, MP3) to DSD format before it reaches the DAC. This process is called PCM-to-DSD transcoding.
+                </p>
+
+                <div className="bg-gray-800 p-4 rounded-md border border-gray-600">
+                  <h3 className="text-xl font-medium text-blue-300 mb-2">How it Works & Perceived Effects</h3>
+                  <p className="text-gray-300 mb-3">
+                    When PCM audio is converted to DSD, the DAC's internal DSD processing path is utilized. Proponents of this setting often describe the sound as:
+                  </p>
+                  <ul className="list-disc list-inside text-gray-300 space-y-1 ml-4">
+                    <li><span className="font-semibold text-gray-200">Smoother and more analog-like:</span> The single-bit stream is thought to reduce digital artifacts and provide a more continuous sound.</li>
+                    <li><span className="font-semibold text-gray-200">Improved soundstage and depth:</span> Some listeners perceive a wider and deeper soundstage.</li>
+                    <li><span className="font-semibold text-gray-200">Less fatiguing:</span> The absence of steep digital filters (which are inherent in PCM playback) can lead to a more relaxed listening experience.</li>
+                    <li><span className="font-semibold text-gray-200">Reduced harshness:</span> Especially noticeable in the treble frequencies, leading to a more natural and less analytical presentation.</li>
+                  </ul>
+                  <p className="text-gray-300 mt-3">
+                    However, it's important to note that this is a conversion process. While it can enhance the sound for some, it's not a true DSD recording and can introduce its own set of characteristics. The effect is highly subjective and depends on the original recording and your personal preferences.
+                  </p>
+                </div>
+
+                <div className="bg-gray-800 p-4 rounded-md border border-gray-600">
+                  <h3 className="text-xl font-medium text-blue-300 mb-2">Conceptual Visualization: PCM vs. DSD</h3>
+                  <p className="text-gray-300 mb-3">
+                    Imagine PCM as a staircase, where each step represents a discrete amplitude level. DSD, in contrast, is like a very fine ramp, where the slope (density of pulses) represents the amplitude.
+                  </p>
+                  <div className="w-full max-w-lg mx-auto p-2 bg-gray-900 rounded-lg border border-gray-700">
+                    <svg viewBox="0 0 400 200" className="w-full h-auto">
+                      <rect x="0" y="0" width="400" height="200" fill="#1f2937" rx="8" ry="8"/>
+                      <text x="200" y="20" fill="#cbd5e1" fontSize="14" textAnchor="middle" fontWeight="bold">PCM vs. DSD Conceptual Waveform</text>
+
+                      {/* PCM Representation */}
+                      <text x="100" y="50" fill="#60a5fa" fontSize="12" textAnchor="middle">PCM (Staircase)</text>
+                      <path d="M50,100 L70,100 L70,80 L90,80 L90,120 L110,120 L110,90 L130,90 L130,110 L150,110 L150,70 L170,70 L170,100"
+                            stroke="#60a5fa" strokeWidth="2" fill="none"/>
+                      <circle cx="50" cy="100" r="2" fill="#60a5fa"/>
+                      <circle cx="70" cy="100" r="2" fill="#60a5fa"/>
+                      <circle cx="70" cy="80" r="2" fill="#60a5fa"/>
+                      <circle cx="90" cy="80" r="2" fill="#60a5fa"/>
+                      <circle cx="90" cy="120" r="2" fill="#60a5fa"/>
+                      <circle cx="110" cy="120" r="2" fill="#60a5fa"/>
+                      <circle cx="110" cy="90" r="2" fill="#60a5fa"/>
+                      <circle cx="130" cy="90" r="2" fill="#60a5fa"/>
+                      <circle cx="130" cy="110" r="2" fill="#60a5fa"/>
+                      <circle cx="150" cy="110" r="2" fill="#60a5fa"/>
+                      <circle cx="150" cy="70" r="2" fill="#60a5fa"/>
+                      <circle cx="170" cy="70" r="2" fill="#60a5fa"/>
+                      <circle cx="170" cy="100" r="2" fill="#60a5fa"/>
+
+
+                      {/* DSD Representation */}
+                      <text x="300" y="50" fill="#a78bfa" fontSize="12" textAnchor="middle">DSD (Pulse Density)</text>
+                      <line x1="230" y1="100" x2="370" y2="100" stroke="#4a5568" strokeWidth="1" strokeDasharray="2 2"/> {/* Baseline */}
+                      {/* Pulses representing varying density */}
+                      <circle cx="230" cy="90" r="1.5" fill="#a78bfa"/>
+                      <circle cx="235" cy="95" r="1.5" fill="#a78bfa"/>
+                      <circle cx="240" cy="85" r="1.5" fill="#a78bfa"/>
+                      <circle cx="245" cy="90" r="1.5" fill="#a78bfa"/>
+                      <circle cx="250" cy="105" r="1.5" fill="#a78bfa"/>
+                      <circle cx="255" cy="110" r="1.5" fill="#a78bfa"/>
+                      <circle cx="260" cy="115" r="1.5" fill="#a78bfa"/>
+                      <circle cx="265" cy="110" r="1.5" fill="#a78bfa"/>
+                      <circle cx="270" cy="105" r="1.5" fill="#a78bfa"/>
+                      <circle cx="275" cy="95" r="1.5" fill="#a78bfa"/>
+                      <circle cx="280" cy="85" r="1.5" fill="#a78bfa"/>
+                      <circle cx="285" cy="80" r="1.5" fill="#a78bfa"/>
+                      <circle cx="290" cy="75" r="1.5" fill="#a78bfa"/>
+                      <circle cx="295" cy="80" r="1.5" fill="#a78bfa"/>
+                      <circle cx="300" cy="85" r="1.5" fill="#a78bfa"/>
+                      <circle cx="305" cy="90" r="1.5" fill="#a78bfa"/>
+                      <circle cx="310" cy="95" r="1.5" fill="#a78bfa"/>
+                      <circle cx="315" cy="100" r="1.5" fill="#a78bfa"/>
+                      <circle cx="320" cy="105" r="1.5" fill="#a78bfa"/>
+                      <circle cx="325" cy="110" r="1.5" fill="#a78bfa"/>
+                      <circle cx="330" cy="115" r="1.5" fill="#a78bfa"/>
+                      <circle cx="335" cy="120" r="1.5" fill="#a78bfa"/>
+                      <circle cx="340" cy="115" r="1.5" fill="#a78bfa"/>
+                      <circle cx="345" cy="110" r="1.5" fill="#a78bfa"/>
+                      <circle cx="350" cy="105" r="1.5" fill="#a78bfa"/>
+                      <circle cx="355" cy="100" r="1.5" fill="#a78bfa"/>
+                      <circle cx="360" cy="95" r="1.5" fill="#a78bfa"/>
+                      <circle cx="365" cy="90" r="1.5" fill="#a78bfa"/>
+                      <circle cx="370" cy="85" r="1.5" fill="#a78bfa"/>
+                    </svg>
+                  </div>
+                </div>
+
+                <div className="bg-gray-800 p-4 rounded-md border border-gray-600">
+                  <h3 className="text-xl font-medium text-purple-300 mb-2">When to Use "All to DSD"</h3>
+                  <p className="text-gray-300">
+                    This setting is highly subjective. Experiment with it to see if you prefer the sound signature it produces. It can be particularly beneficial for:
+                  </p>
+                  <ul className="list-disc list-inside text-gray-300 space-y-1 ml-4">
+                    <li>Recordings that sound harsh or fatiguing in PCM.</li>
+                    <li>Genres where smoothness and natural decay are highly valued (e.g., Classical, Jazz, Ambient).</li>
+                    <li>Listeners who prefer a less analytical and more "musical" presentation.</li>
+                  </ul>
+                  <p className="text-gray-300 mt-3">
+                    It's less ideal if you prioritize absolute bit-perfect playback of PCM or if you find the DSD conversion introduces an unwanted softness or lack of "punch" for certain genres.
+                  </p>
+                </div>
+              </div>
+            </section>
+          );
+        };
+
+        // Component for EQ Wizard Section (embedding the external app)
+        const EQWizardSection = () => {
+          return (
+            <section>
+              <h2 className="text-3xl sm:text-4xl font-bold text-teal-400 mb-6 text-center">
+                DAP EQ Wizard
+              </h2>
+              <p className="text-lg text-gray-300 mb-8 text-center">
+                Explore and fine-tune your DAP's equalizer settings with the integrated EQ Wizard.
+              </p>
+              <div className="w-full h-[70vh] bg-gray-700 rounded-xl shadow-xl overflow-hidden border border-gray-600">
+                <iframe
+                  src="https://msxada.github.io/Parametric-EQ-Wizard/" // Updated URL
+                  title="DAP EQ Wizard"
+                  className="w-full h-full border-0"
+                  sandbox="allow-scripts allow-same-origin allow-popups allow-forms" // Essential for security and functionality
+                >
+                  Your browser does not support iframes. Please visit <a href="https://msxada.github.io/Parametric-EQ-Wizard/" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">the EQ Wizard directly</a>.
+                </iframe>
+              </div>
+            </section>
+          );
+        };
+
+        // Main App component
+        const App = () => {
+          const [activeSection, setActiveSection] = React.useState('filters'); // 'filters', 'dsd', 'eq'
+
+          // Tailwind CSS is assumed to be available
+          return (
+            <div className="min-h-screen bg-gray-900 text-gray-100 font-inter p-4 sm:p-6 md:p-8">
+              <header className="text-center mb-10">
+                <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-blue-400 mb-2">
+                  DAP Audio Explorer
+                </h1>
+                <p className="text-xl sm:text-2xl text-gray-300">
+                  Unraveling DAC Filters, DSD, and EQ Settings
+                </p>
+              </header>
+
+              <nav className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-10">
+                <button
+                  onClick={() => setActiveSection('filters')}
+                  className={`px-5 py-2 rounded-lg font-medium transition-all duration-300 ease-in-out
+                    ${activeSection === 'filters' ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white'}
+                    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75`}
+                >
+                  DAC Filters
+                </button>
+                <button
+                  onClick={() => setActiveSection('dsd')}
+                  className={`px-5 py-2 rounded-lg font-medium transition-all duration-300 ease-in-out
+                    ${activeSection === 'dsd' ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white'}
+                    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75`}
+                >
+                  All to DSD
+                </button>
+                <button
+                  onClick={() => setActiveSection('eq')}
+                  className={`px-5 py-2 rounded-lg font-medium transition-all duration-300 ease-in-out
+                    ${activeSection === 'eq' ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-700 text-gray-300 hover:bg-gray-600 hover:text-white'}
+                    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75`}
+                >
+                  EQ Wizard
+                </button>
+              </nav>
+
+              <main className="max-w-6xl mx-auto bg-gray-800 rounded-xl shadow-2xl p-6 sm:p-8 md:p-10">
+                {activeSection === 'filters' && <DACFiltersSection />}
+                {activeSection === 'dsd' && <AllToDSDSection />}
+                {activeSection === 'eq' && <EQWizardSection />}
+              </main>
+            </div>
+          );
+        };
+
+        // Render the React application
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
