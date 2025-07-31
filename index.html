@@ -46,6 +46,67 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <script type="text/babel">
+        // IMPORTANT: All React components must be defined BEFORE they are used in the main App component.
+
+        // Component for a single DAC Filter Card
+        const DACFilterCard = ({ filter }) => {
+          const [showDetails, setShowDetails] = React.useState(false);
+
+          return (
+            <div className="bg-gray-700 rounded-lg p-6 shadow-xl border border-gray-600 hover:border-blue-500 transition-all duration-300 ease-in-out">
+              <h3 className="text-2xl font-semibold text-blue-300 mb-3">{filter.name}</h3>
+              <p className="text-gray-300 mb-4">{filter.description}</p>
+
+              <button
+                onClick={() => setShowDetails(!showDetails)}
+                className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+              >
+                {showDetails ? 'Hide Details' : 'Show Detailed Analysis'}
+              </button>
+
+              {showDetails && (
+                <div className="mt-4 space-y-6">
+                  <div className="bg-gray-800 p-4 rounded-md border border-gray-600">
+                    <h4 className="text-xl font-medium text-teal-300 mb-2">Impulse Response & Ringing</h4>
+                    <p className="text-gray-300 mb-3">{filter.impulseResponse}</p>
+                    <div className="w-full max-w-sm mx-auto p-2 bg-gray-900 rounded-lg border border-gray-700">
+                      {filter.svg}
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-800 p-4 rounded-md border border-gray-600">
+                    <h4 className="text-xl font-medium text-teal-300 mb-2">Frequency Response & Roll-off</h4>
+                    <p className="text-gray-300 mb-3">
+                      This graph illustrates how the filter attenuates frequencies beyond the audible range.
+                    </p>
+                    <div className="w-full max-w-sm mx-auto p-2 bg-gray-900 rounded-lg border border-gray-700">
+                      {filter.freqSvg}
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-800 p-4 rounded-md border border-gray-600">
+                    <h4 className="text-xl font-medium text-teal-300 mb-2">Distortion Characteristics</h4>
+                    <p className="text-gray-300">{filter.distortion}</p>
+                  </div>
+
+                  <div className="bg-gray-800 p-4 rounded-md border border-gray-600">
+                    <h4 className="text-xl font-medium text-purple-300 mb-2">Recommended Usage</h4>
+                    <p className="text-gray-300">
+                      <span className="font-semibold text-gray-200">Best for Genres:</span> {filter.genres}
+                    </p>
+                    <p className="text-gray-300 mt-1">
+                      <span className="font-semibold text-gray-200">Listening Scenarios:</span> {filter.scenarios}
+                    </p>
+                    <p className="text-gray-300 mt-1">
+                      <span className="font-semibold text-gray-200">Works well with EQ Types:</span> {filter.eqTypes}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        };
+
         // Component for DAC Filters Section
         const DACFiltersSection = () => {
           // Data for different DAC filters, including their characteristics and recommendations
@@ -223,46 +284,4 @@
                   <rect x="0" y="0" width="300" height="150" fill="#1f2937" rx="8" ry="8"/>
                   <text x="150" y="20" fill="#cbd5e1" fontSize="12" textAnchor="middle" fontWeight="bold">Impulse Response: Apodizing Fast Roll-off</text>
                   {/* Baseline */}
-                  <line x1="20" y1="75" x2="280" y2="75" stroke="#4a5568" strokeWidth="1" strokeDasharray="2 2"/>
-                  {/* Reduced Pre-ringing */}
-                  <path d="M20,75 C50,73 70,77 90,75" stroke="#ef4444" strokeWidth="1" fill="none"/>
-                  {/* Main impulse */}
-                  <line x1="90" y1="75" x2="90" y2="40" stroke="#60a5fa" strokeWidth="3"/>
-                  {/* Post-ringing (moderate) */}
-                  <path d="M90,40 C120,75 140,65 160,75 S180,85 200,75 S220,65 240,75" stroke="#f97316" strokeWidth="2" fill="none"/>
-                  <text x="50" y="100" fill="#ef4444" fontSize="10">Reduced Pre-Ringing</text>
-                  <text x="180" y="100" fill="#f97316" fontSize="10">Moderate Post-Ringing</text>
-                  <text x="90" y="35" fill="#60a5fa" fontSize="10" textAnchor="middle">Impulse</text>
-                </svg>
-              ),
-              freqSvg: (
-                <svg viewBox="0 0 300 150" className="w-full h-auto">
-                  <rect x="0" y="0" width="300" height="150" fill="#1f2937" rx="8" ry="8"/>
-                  <text x="150" y="20" fill="#cbd5e1" fontSize="12" textAnchor="middle" fontWeight="bold">Frequency Response: Fast Roll-off (Apodizing)</text>
-                  {/* Axes */}
-                  <line x1="20" y1="130" x2="280" y2="130" stroke="#4a5568" strokeWidth="1"/>
-                  <line x1="20" y1="130" x2="20" y2="30" stroke="#4a5568" strokeWidth="1"/>
-                  {/* Curve */}
-                  <path d="M20,100 C80,100 150,100 200,90 C220,80 240,60 260,30" stroke="#60a5fa" strokeWidth="2" fill="none"/>
-                  <text x="150" y="145" fill="#cbd5e1" fontSize="10" textAnchor="middle">Frequency</text>
-                  <text x="5" y="75" fill="#cbd5e1" fontSize="10" textAnchor="middle" transform="rotate(-90 5 75)">Amplitude</text>
-                  <text x="230" y="50" fill="#60a5fa" fontSize="10">Sharp Roll-off</text>
-                </svg>
-              )
-            },
-            {
-              name: "Hybrid Fast Roll-off",
-              description: "A compromise filter that attempts to balance the benefits of linear phase (sharp cut-off) and minimum phase (no pre-ringing).",
-              impulseResponse: "Very little pre-ringing, and moderate post-ringing. It aims for a good balance between time-domain accuracy and frequency-domain precision.",
-              distortion: "Low distortion, with a balanced presentation of artifacts. Often a good all-rounder.",
-              genres: "Pop, Rock, Electronic, Classical – versatile for most genres.",
-              scenarios: "General listening, when you want a good balance of detail and naturalness without strong emphasis on either.",
-              eqTypes: "Highly versatile with EQ, as it provides a solid foundation without extreme characteristics.",
-              svg: (
-                <svg viewBox="0 0 300 150" className="w-full h-auto">
-                  <rect x="0" y="0" width="300" height="150" fill="#1f2937" rx="8" ry="8"/>
-                  <text x="150" y="20" fill="#cbd5e1" fontSize="12" textAnchor="middle" fontWeight="bold">Impulse Response: Hybrid Fast Roll-off</text>
-                  {/* Baseline */}
-                  <line x1="20" y1="75" x2="280" y2="75" stroke="#4a5568" strokeWidth="1" strokeDasharray="2 2"/>
-                  {/* Minimal Pre-ringing */}
-       
+                  <line x1="20" y1="75" x2="280" y2="75" st
